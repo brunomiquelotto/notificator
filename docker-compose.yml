@@ -1,0 +1,59 @@
+version: "3.7"
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - app-network
+  app:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - app-network
+  nginx:
+    image: nginx:mainline-alpine
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    volumes:
+      - ./nginx-conf:/etc/nginx/conf.d
+    depends_on:
+      - api
+      - app
+    networks:
+      - app-network
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: "rabbitmq"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  fake_smtp:
+    image: mailhog/mailhog
+    ports:
+      - "1081:8025"
+      - "1025:1025"
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017
