@@ -1,18 +1,32 @@
 var express = require("express");
 var router = express.Router();
 const mongoose = require("mongoose");
-const { NotificationType } = require('../models');
 
 mongoose.connect("mongodb://localhost:27017/notifications");
 
+const notificationSchema = new mongoose.Schema(
+  {
+    userId: String,
+    notificationTypeId: String,
+    params: Object,
+    title: String,
+    accountId: String,
+    type: String,
+    sentAt: Date
+  },
+  { collection: "notifications" }
+);
+
+const Notification = mongoose.model("notification", notificationSchema);
+
 /* GET users listing. */
 router.get("/", async function (req, res) {
-  var accounts = await NotificationType.find({ account_id: req.headers['account-id'] });
+  var accounts = await Notification.find({ account_id: req.headers['account-id'] });
   res.send(accounts);
 });
 
 router.post("/", async function (req, res) {
-  var notification = new NotificationType({
+  var notification = new Notification({
     identificator: req.body.identificator,
     defaultTitle: req.body.defaultTitle,
     defaultDescription: req.body.defaultDescription,
@@ -20,7 +34,7 @@ router.post("/", async function (req, res) {
     type: req.body.type,
   });
 
-  var existingNotification = await NotificationType.findOne({
+  var existingNotification = await Notification.findOne({
     identificator: req.body.identificator,
     type: req.body.type,
   });
@@ -34,7 +48,7 @@ router.post("/", async function (req, res) {
 });
 
 router.put("/:id", async function (req, res, next) {
-  var notification = await NotificationType.findOne({ _id: req.params.id, account_id: req.headers['account-id'] });
+  var notification = await Notification.findOne({ _id: req.params.id, account_id: req.headers['account-id'] });
   if (!notification) {
     return next();
   }
@@ -48,7 +62,7 @@ router.put("/:id", async function (req, res, next) {
 });
 
 router.delete("/:id", async function (req, res, next) {
-  var notification = await NotificationType.findOne({
+  var notification = await Notification.findOne({
     _id: req.params.id,
     accountId: req.headers['account-id'],
   });
@@ -61,7 +75,7 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 router.get("/:id", async function (req, res, next) {
-  var notification = await NotificationType.findOne({ _id: req.params.id, account_id: req.headers['account-id'] });
+  var notification = await Notification.findOne({ _id: req.params.id, account_id: req.headers['account-id'] });
 
   if (!notification) {
     return next();

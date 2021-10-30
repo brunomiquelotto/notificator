@@ -1,15 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const mongoose = require("mongoose");
+const { Account } = require('../models');
 
 mongoose.connect("mongodb://localhost:27017/notifications");
-
-const accountSchema = new mongoose.Schema(
-  { name: String, adminEmail: String },
-  { collection: "accounts" }
-);
-
-const Account = mongoose.model("account", accountSchema);
 
 /* GET users listing. */
 router.get("/", async function (req, res) {

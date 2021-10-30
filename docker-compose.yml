@@ -5,32 +5,32 @@ networks:
     driver: bridge
 
 services:
-  api:
-    build:
-      context: api
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    networks:
-      - app-network
-  app:
-    build:
-      context: app
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    networks:
-      - app-network
-  nginx:
-    image: nginx:mainline-alpine
-    restart: unless-stopped
-    ports:
-      - "3001:80"
-    volumes:
-      - ./nginx-conf:/etc/nginx/conf.d
-    depends_on:
-      - api
-      - app
-    networks:
-      - app-network
+  # api:
+  #   build:
+  #     context: api
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-network
+  # app:
+  #   build:
+  #     context: app
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   networks:
+  #     - app-network
+  # nginx:
+  #   image: nginx:mainline-alpine
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3001:80"
+  #   volumes:
+  #     - ./nginx-conf:/etc/nginx/conf.d
+  #   depends_on:
+  #     - api
+  #     - app
+  #   networks:
+  #     - app-network
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: "rabbitmq"
