@@ -1,9 +1,10 @@
 var express = require("express");
 var router = express.Router();
-const mongoose = require("mongoose");
 const { User } = require('../models');
 
-mongoose.connect("mongodb://localhost:27017/notifications");
+const database = require("../database");
+database.connect();
+
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
