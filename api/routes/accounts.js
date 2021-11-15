@@ -8,7 +8,7 @@ const { Account } = require('../models');
 
 /* GET users listing. */
 router.get("/", async function (req, res) {
-  var accounts = await Account.find();
+  var accounts = await Account.find().lean();
   res.send(accounts);
 });
 
@@ -26,6 +26,7 @@ router.put("/:id", async function (req, res, next) {
   if (!account) {
     return next();
   }
+  //TODO: update data
 
   return res.send(account);
 });
@@ -41,7 +42,7 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 router.get("/:id", async function (req, res, next) {
-  var account = await Account.findOne({ _id: req.params.id });
+  var account = await Account.findOne({ _id: req.params.id }).lean();
   if (!account) {
     return next();
   }

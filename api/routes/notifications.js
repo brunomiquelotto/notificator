@@ -8,7 +8,8 @@ database.connect();
 
 /* GET users listing. */
 router.get("/", async function (req, res) {
-  var accounts = await NotificationType.find({ account_id: req.headers['account-id'] });
+  const info = { account_id: req.headers['account-id'] };
+  var accounts = await NotificationType.find(info).lean();
   res.send(accounts);
 });
 
@@ -62,7 +63,7 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 router.get("/:id", async function (req, res, next) {
-  var notification = await NotificationType.findOne({ _id: req.params.id, account_id: req.headers['account-id'] });
+  var notification = await NotificationType.findOne({ _id: req.params.id, account_id: req.headers['account-id'] }).lean();
 
   if (!notification) {
     return next();

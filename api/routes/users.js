@@ -8,7 +8,7 @@ database.connect();
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
-  var users = await User.find({ accountId: req.headers['account-id'] });
+  var users = await User.find({ accountId: req.headers['account-id'] }).lean();
   res.send(users);
 });
 
@@ -38,7 +38,7 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 router.get("/:id", async function (req, res) {
-  var user = await User.findOne({ _id: req.params.id, accountId: req.headers['account-id'] });
+  var user = await User.findOne({ _id: req.params.id, accountId: req.headers['account-id'] }).lean();
   if (!user) {
     return res.status(404).end();
   }

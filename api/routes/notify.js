@@ -22,7 +22,7 @@ const Notification = mongoose.model("notification", notificationSchema);
 
 /* GET users listing. */
 router.get("/", async function (req, res) {
-  var accounts = await Notification.find({ account_id: req.headers['account-id'] });
+  var accounts = await Notification.find({ account_id: req.headers['account-id'] }).lean();
   res.send(accounts);
 });
 
@@ -76,7 +76,7 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 router.get("/:id", async function (req, res, next) {
-  var notification = await Notification.findOne({ _id: req.params.id, account_id: req.headers['account-id'] });
+  var notification = await Notification.findOne({ _id: req.params.id, account_id: req.headers['account-id'] }).lean();
 
   if (!notification) {
     return next();
